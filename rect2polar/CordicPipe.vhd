@@ -1,12 +1,20 @@
+--
+-- file: CordicPipe.vhd
+-- author: Richard Herveille
+-- rev. 1.0 initial release
+-- rev. 1.1 19/03/2001 Changed function Delta, it is compatible with Xilinx WebPack software now
+--
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 
 entity CordicPipe is 
 	generic(
-		WIDTH 	: natural;
-		AWIDTH	: natural;
-		PIPEID	: natural);
+		WIDTH 	: natural := 16;
+		AWIDTH	: natural := 16;
+		PIPEID	: natural := 1
+	);
 	port(
 		clk		: in std_logic;
 		ena		: in std_logic;
@@ -16,7 +24,8 @@ entity CordicPipe is
 		Zi		: in std_logic_vector(AWIDTH -1 downto 0);
 		Xo		: out std_logic_vector(WIDTH -1 downto 0);
 		Yo		: out std_logic_vector(WIDTH -1 downto 0);
-		Zo		: out std_logic_vector(AWIDTH -1 downto 0));
+		Zo		: out std_logic_vector(AWIDTH -1 downto 0)
+	);
 end entity CordicPipe;
 
 architecture dataflow of CordicPipe is
@@ -50,12 +59,17 @@ architecture dataflow of CordicPipe is
 		return result;
 	end CATAN;
 
+	-- function Delta is actually an arithmatic shift right
+	-- This strange construction is needed for compatibility with Xilinx WebPack
 	function Delta(Arg : std_logic_vector; Cnt : natural) return std_logic_vector is
 		variable tmp : std_logic_vector(Arg'range);
+		constant lo : integer := Arg'high -cnt +1;
 	begin
-		tmp := Arg;
-		for n in 1 to cnt loop
-			tmp := ( tmp(Arg'high) & tmp(Arg'high downto 1) );
+		for n in Arg'high downto lo loop
+			tmp(n) := Arg(Arg'high);
+		end loop;
+		for n in Arg'high -cnt downto 0 loop
+			tmp(n) := Arg(n +cnt);
 		end loop;
 		return tmp;
 	end function Delta;

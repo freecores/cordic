@@ -1,7 +1,10 @@
 --
 --	VHDL implementation of cordic algorithm
 --
---
+-- File: cordic.vhd
+-- author: Richard Herveille
+-- rev. 1.0 initial release
+-- rev. 1.1 changed CordicPipe component declaration, Xilinx WebPack issue
 --
 
 library ieee;
@@ -41,18 +44,22 @@ architecture dataflow of Cordic is
 	--	COMPONENT declarations
 	--
 	component CordicPipe
-		generic(
-			WIDTH		: natural;
-			AWIDTH	: natural;
-			PIPEID	: natural);
-		port(
-			clk		: in std_logic;
-			ena		: in std_logic;
+	generic(
+		WIDTH 	: natural := 16;
+		AWIDTH	: natural := 16;
+		PIPEID	: natural := 1
+	);
+	port(
+		clk		: in std_logic;
+		ena		: in std_logic;
 
-			Xi, Yi	: in std_logic_vector(PRECISION downto 0);
-			Zi		: in std_logic_vector(ANG -1 downto 0);
-			Xo, Yo	: out std_logic_vector(PRECISION downto 0);
-			Zo		: out std_logic_vector(ANG -1 downto 0));
+		Xi		: in std_logic_vector(WIDTH -1 downto 0); 
+		Yi		: in std_logic_vector(WIDTH -1 downto 0);
+		Zi		: in std_logic_vector(AWIDTH -1 downto 0);
+		Xo		: out std_logic_vector(WIDTH -1 downto 0);
+		Yo		: out std_logic_vector(WIDTH -1 downto 0);
+		Zo		: out std_logic_vector(AWIDTH -1 downto 0)
+	);
 	end component CordicPipe;
 
 	--
