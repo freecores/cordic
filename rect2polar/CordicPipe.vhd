@@ -2,8 +2,8 @@
 -- file: CordicPipe.vhd
 -- author: Richard Herveille
 -- rev. 1.0 initial release
--- rev. 1.1 19/03/2001 Changed function Delta, it is compatible with Xilinx WebPack software now
---
+-- rev. 1.1 March 19th, 2001. Richard Herveille. Changed function Delta, it is compatible with Xilinx WebPack software now
+-- rev. 1.2 May   18th, 2001. Richard Herveille. Added documentation to function ATAN (by popular request).
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -32,6 +32,21 @@ architecture dataflow of CordicPipe is
 
 	--
 	-- functions
+	--
+
+	-- Function CATAN (constante arc-tangent).
+	-- This is a lookup table containing pre-calculated arc-tangents.
+	-- 'n' is the number of the pipe, returned is a 20bit arc-tangent value.
+	-- The numbers are calculated as follows: Z(n) = atan(1/2^n)
+	-- examples:
+	-- 20bit values => 2^20 = 2pi(rad)
+	--                 1(rad) = 2^20/2pi = 166886.053....
+	-- n:1, atan(1/2) = 0.4636...(rad)
+	--      0.4636... * 166886.053... = 77376.32(dec) = 12E40(hex)
+	-- n:2, atan(1/4) = 0.2449...(rad)
+	--      0.2449... * 166886.053... = 40883.52(dec) = 9FB3(hex)
+	-- n:3, atan(1/8) = 0.1243...(rad)
+	--      0.1243... * 166886.053... = 20753.11(dec) = 5111(hex)
 	--
 	function CATAN(n :natural) return integer is
 	variable result	:integer;
